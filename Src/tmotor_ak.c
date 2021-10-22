@@ -1,14 +1,8 @@
-/** @file   QDD.c
- *  @brief  Functions for controlling QDD
- *  @author Rehabilitation Research Institute of Singapore / MRTA Team
- */
-#include "QDD.h"
+#include "tmotor_ak.h"
 
 
 #define LIMIT_MIN_MAX(x,min,max) (x) = (((x)<=(min))?(min):(((x)>=(max))?(max):(x)))
 
-
-CAN_HandleTypeDef hcan1;
 static volatile uint8_t flagCANIdle = 0;
 
 
@@ -68,69 +62,69 @@ static void ctrlParameter_to_package(QDD_MOTOR *qdd)
 }
 
 
-HAL_StatusTypeDef QDD_Init(void)
-{
-	__HAL_RCC_CAN1_CLK_ENABLE();
-	
-	/**CAN1 GPIO Configuration    
-	PD0     ------> CAN1_RX
-	PD1     ------> CAN1_TX 
-	*/
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
-	GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
-	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-	GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
-	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+//HAL_StatusTypeDef QDD_Init(void)
+//{
+//	__HAL_RCC_CAN1_CLK_ENABLE();
+//	
+//	/**CAN1 GPIO Configuration    
+//	PD0     ------> CAN1_RX
+//	PD1     ------> CAN1_TX 
+//	*/
+//	GPIO_InitTypeDef GPIO_InitStruct = {0};
+//	GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
+//	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//	GPIO_InitStruct.Pull = GPIO_NOPULL;
+//	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+//	GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
+//	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-	/* CAN1 interrupt Init */
-	HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 5, 0);
-	HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
-	
-	// The baudrate of CAN BUS is PCLK1 ( 42MHz ) / Prescaler / ( TimeSeg1 + TimeSeg2 + 1 ) = 1Mbit/s
-	
-	hcan1.Instance = CAN1;
-  hcan1.Init.Prescaler = 6;
-  hcan1.Init.Mode = CAN_MODE_NORMAL;
-  hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan1.Init.TimeSeg1 = CAN_BS1_3TQ;
-  hcan1.Init.TimeSeg2 = CAN_BS2_3TQ;
-  hcan1.Init.TimeTriggeredMode = DISABLE;
-  hcan1.Init.AutoBusOff = DISABLE;
-  hcan1.Init.AutoWakeUp = DISABLE;
-  hcan1.Init.AutoRetransmission = ENABLE;
-  hcan1.Init.ReceiveFifoLocked = DISABLE;
-  hcan1.Init.TransmitFifoPriority = DISABLE;
-  if(HAL_CAN_Init(&hcan1) != HAL_OK)	return HAL_ERROR;
-	
-	// Config the CAN input filter and enable the reception function
-	CAN_FilterTypeDef canFilter;
-	canFilter.FilterIdHigh = 0;
-	canFilter.FilterIdLow = 0;
-	canFilter.FilterMaskIdHigh = 0;
-	canFilter.FilterMaskIdLow = 0;
-	canFilter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-	canFilter.FilterBank = 0;
-	canFilter.FilterMode = CAN_FILTERMODE_IDMASK;
-	canFilter.FilterScale = CAN_FILTERSCALE_32BIT;
-	canFilter.FilterActivation = CAN_FILTER_ENABLE;
-	canFilter.SlaveStartFilterBank = 0;
-	if(HAL_CAN_ConfigFilter(&hcan1, &canFilter) != HAL_OK )	return HAL_ERROR;
-	
-	if(HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK )	return HAL_ERROR;
-	
-	if(HAL_CAN_Start(&hcan1) != HAL_OK )	return HAL_ERROR;
-	
-	// Fill the txCtrlBuf with parameter 0
-	ctrlParameter_to_package(&qddWaistT);
-	ctrlParameter_to_package(&qddWaistR);
-	ctrlParameter_to_package(&qddElbowR);
-	
-	flagCANIdle = 1;
-	
-	return HAL_OK;
-}
+//	/* CAN1 interrupt Init */
+//	HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 5, 0);
+//	HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
+//	
+//	// The baudrate of CAN BUS is PCLK1 ( 42MHz ) / Prescaler / ( TimeSeg1 + TimeSeg2 + 1 ) = 1Mbit/s
+//	
+//	hcan1.Instance = CAN1;
+//  hcan1.Init.Prescaler = 6;
+//  hcan1.Init.Mode = CAN_MODE_NORMAL;
+//  hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
+//  hcan1.Init.TimeSeg1 = CAN_BS1_3TQ;
+//  hcan1.Init.TimeSeg2 = CAN_BS2_3TQ;
+//  hcan1.Init.TimeTriggeredMode = DISABLE;
+//  hcan1.Init.AutoBusOff = DISABLE;
+//  hcan1.Init.AutoWakeUp = DISABLE;
+//  hcan1.Init.AutoRetransmission = ENABLE;
+//  hcan1.Init.ReceiveFifoLocked = DISABLE;
+//  hcan1.Init.TransmitFifoPriority = DISABLE;
+//  if(HAL_CAN_Init(&hcan1) != HAL_OK)	return HAL_ERROR;
+//	
+//	// Config the CAN input filter and enable the reception function
+//	CAN_FilterTypeDef canFilter;
+//	canFilter.FilterIdHigh = 0;
+//	canFilter.FilterIdLow = 0;
+//	canFilter.FilterMaskIdHigh = 0;
+//	canFilter.FilterMaskIdLow = 0;
+//	canFilter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+//	canFilter.FilterBank = 0;
+//	canFilter.FilterMode = CAN_FILTERMODE_IDMASK;
+//	canFilter.FilterScale = CAN_FILTERSCALE_32BIT;
+//	canFilter.FilterActivation = CAN_FILTER_ENABLE;
+//	canFilter.SlaveStartFilterBank = 0;
+//	if(HAL_CAN_ConfigFilter(&hcan1, &canFilter) != HAL_OK )	return HAL_ERROR;
+//	
+//	if(HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK )	return HAL_ERROR;
+//	
+//	if(HAL_CAN_Start(&hcan1) != HAL_OK )	return HAL_ERROR;
+//	
+//	// Fill the txCtrlBuf with parameter 0
+//	ctrlParameter_to_package(&qddWaistT);
+//	ctrlParameter_to_package(&qddWaistR);
+//	ctrlParameter_to_package(&qddElbowR);
+//	
+//	flagCANIdle = 1;
+//	
+//	return HAL_OK;
+//}
 
 
 HAL_StatusTypeDef QDD_Control(QDD_MOTOR *qdd)
@@ -215,7 +209,7 @@ HAL_StatusTypeDef CAN_TX(uint8_t ID, uint8_t *buf, uint8_t dataSize)
 //	}
 	
 	flagCANIdle = 0;
-	return HAL_CAN_AddTxMessage(&hcan1, &canTxHeader, buf, &txMailBox);
+////////////////////////////////	return HAL_CAN_AddTxMessage(&hcan1, &canTxHeader, buf, &txMailBox);
 }
 
 

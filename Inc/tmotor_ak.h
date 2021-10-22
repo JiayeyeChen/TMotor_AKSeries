@@ -1,10 +1,5 @@
-/** @file   QDD.h
- *  @brief  Header file for QDD (Quasi Direct Drive)
- *  @author Rehabilitation Research Institute of Singapore / MRTA Team
- */
-
-#ifndef __QDD_H
-#define __QDD_H
+#ifndef TMOTOR_AK_H
+#define TMOTOR_AK_H
 
 #include "stm32f4xx_hal.h"
 
@@ -78,11 +73,11 @@ typedef struct{
 extern QDD_MOTOR qddWaistT, qddWaistR, qddElbowR;
 
 
-/** @brief QDD Initialization Function. Initialization for the CAN1.
- *  			 CAN1 is responsible for the control of the QDD.
- *  @return HAL_OK or HAL_ERROR.
- */
-HAL_StatusTypeDef QDD_Init(void);
+///** @brief QDD Initialization Function. Initialization for the CAN1.
+// *  			 CAN1 is responsible for the control of the QDD.
+// *  @return HAL_OK or HAL_ERROR.
+// */
+//HAL_StatusTypeDef QDD_Init(void);
 
 
 /**	@brief Send the parameters of controlling to the motor.
