@@ -1,6 +1,5 @@
 #include "tmotor_ak.h"
 
-
 #define LIMIT_MIN_MAX(x,min,max) (x) = (((x)<=(min))?(min):(((x)>=(max))?(max):(x)))
 
 static volatile uint8_t flagCANIdle = 0;
