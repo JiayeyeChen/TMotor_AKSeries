@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/jiaye/Github/Personal/TMotor_AKSeries/PC_End/main.cpp
+iostream
+-
+boost/asio.hpp
+-
+main.hpp
+-
+serial_test.hpp
+-
+

@@ -1,0 +1,3 @@
+/home/jiaye/Github/Personal/TMotor_AKSeries/PC_End/Build/CMakeFiles/rebuild_cache.dir
+/home/jiaye/Github/Personal/TMotor_AKSeries/PC_End/Build/CMakeFiles/edit_cache.dir
+/home/jiaye/Github/Personal/TMotor_AKSeries/PC_End/Build/CMakeFiles/example.dir
