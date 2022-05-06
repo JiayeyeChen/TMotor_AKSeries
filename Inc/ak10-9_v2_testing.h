@@ -5,6 +5,8 @@
 #include "tmotor_ak10-9_v2.h"
 #include "my_math.h"
 #include <math.h>
+#include "exoskeleton.h"
+#include "usb.h"
 
 enum ControlMode
 {
@@ -19,6 +21,10 @@ void AK10_9_MotorProfiling_Function1(AK10_9Handle* hmotor);
 void AK10_9_MotorProfiling_Function2_CurrentControlStepResponse(AK10_9Handle* hmotor);
 void AK10_9_Calculate_velocity_current_AVG(AK10_9Handle* hmotor);
 void AK10_9_ImpedanceControl(AK10_9Handle* hmotor, float spring_constant, float damping_constant, float center_position);
+
+void AK10_9_DataLog_Update_Data_Slots(AK10_9Handle* hmotor, BNO055Handle* himu);
+void AK10_9_DataLog_Manager(AK10_9Handle* hmotor, BNO055Handle* himu);
+void AK10_9_Set_DataLog_Label(void);
 
 extern AK10_9Handle hAKMotorLeftHip, hAKMotorLeftKnee, hAKMotorRightHip, hAKMotorRightKnee;
 extern uint8_t ifMotorProfilingStarted;
