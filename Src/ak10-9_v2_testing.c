@@ -1,6 +1,7 @@
 #include "ak10-9_v2_testing.h"
 
 AK10_9Handle hAKMotorLeftHip, hAKMotorLeftKnee, hAKMotorRightHip, hAKMotorRightKnee;
+AK10_9Handle* hMotorPtrManualControl;
 
 float motor_profiling_trajectory = 0.0f;
 uint8_t ifMotorProfilingStarted = 0;
@@ -20,11 +21,17 @@ uint8_t ifImpedanceControlStarted = 0;
 
 void MotorInit(void)
 {
-  hAKMotorLeftHip.hcan = &hcan2;
-  hAKMotorLeftHip.canID = CAN_ID_TMOTOR_EXOSKELETON_LEFT_HIP;
-  hAKMotorLeftHip.lastReceivedTime = 0;
-  hAKMotorLeftHip.status = AK10_9_Offline;
-  hAKMotorLeftHip.kt = 1.2138f;
+  hAKMotorRightHip.hcan = &hcan2;
+  hAKMotorRightHip.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_HIP;
+  hAKMotorRightHip.lastReceivedTime = 0;
+  hAKMotorRightHip.status = AK10_9_Offline;
+  hAKMotorRightHip.kt = 1.2138f;
+  
+  hAKMotorRightKnee.hcan = &hcan2;
+  hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE;
+  hAKMotorRightKnee.lastReceivedTime = 0;
+  hAKMotorRightKnee.status = AK10_9_Offline;
+  hAKMotorRightKnee.kt = 1.2138f;
 }
 
 void AK10_9_MotorProfiling_Function1(AK10_9Handle* hmotor)
@@ -84,12 +91,12 @@ void AK10_9_DataLog_Update_Data_Slots(AK10_9Handle* hmotor, BNO055Handle* himu)
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realPosition.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realVelocity.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = 0.0f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.liaccX.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.liaccY.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.liaccZ.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.gyroX.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.gyroY.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.gyroZ.f;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.AccX.b16;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.AccY.b16;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.AccZ.b16;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.gyroX.b16;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.gyroY.b16;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.gyroZ.b16;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = 0.0f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = 0.0f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = 0.0f;

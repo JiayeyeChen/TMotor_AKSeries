@@ -27,6 +27,7 @@ void AK10_9_DataLog_Manager(AK10_9Handle* hmotor, BNO055Handle* himu);
 void AK10_9_Set_DataLog_Label(void);
 
 extern AK10_9Handle hAKMotorLeftHip, hAKMotorLeftKnee, hAKMotorRightHip, hAKMotorRightKnee;
+extern AK10_9Handle* hMotorPtrManualControl;
 extern uint8_t ifMotorProfilingStarted;
 extern uint32_t timeDifference;
 extern float manualControlValue;
