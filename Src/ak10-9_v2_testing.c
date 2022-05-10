@@ -8,6 +8,7 @@ uint8_t ifMotorProfilingStarted = 0;
 uint32_t timeDifference = 0;
 float manualControlValue = 0.0f;
 uint8_t ifManualControlStarted = 0;
+uint8_t ifIMUFeedbackStarted = 0;
 enum ControlMode controlMode = AK10_9_MODE_POSITION;
 
 float velocityAVG[1024] = {0};

@@ -36,4 +36,5 @@ extern uint8_t ifManualControlStarted;
 extern float impedance_control_spring_constant;
 extern float impedance_control_damping_constant;
 extern uint8_t ifImpedanceControlStarted;
+extern uint8_t ifIMUFeedbackStarted;
 #endif
