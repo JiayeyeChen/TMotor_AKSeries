@@ -30,11 +30,13 @@ extern AK10_9Handle hAKMotorLeftHip, hAKMotorLeftKnee, hAKMotorRightHip, hAKMoto
 extern AK10_9Handle* hMotorPtrManualControl;
 extern uint8_t ifMotorProfilingStarted;
 extern uint32_t timeDifference;
-extern float manualControlValue;
 extern enum ControlMode controlMode;
 extern uint8_t ifManualControlStarted;
 extern float impedance_control_spring_constant;
 extern float impedance_control_damping_constant;
 extern uint8_t ifImpedanceControlStarted;
 extern uint8_t ifIMUFeedbackStarted;
+extern float manualControlValue_pos;
+extern float manualControlValue_vel;
+extern float manualControlValue_cur;
 #endif

@@ -4,9 +4,11 @@ AK10_9Handle hAKMotorLeftHip, hAKMotorLeftKnee, hAKMotorRightHip, hAKMotorRightK
 AK10_9Handle* hMotorPtrManualControl;
 
 float motor_profiling_trajectory = 0.0f;
+float manualControlValue_pos = 0.0f;
+float manualControlValue_vel = 0.0f;
+float manualControlValue_cur = 0.0f;
 uint8_t ifMotorProfilingStarted = 0;
 uint32_t timeDifference = 0;
-float manualControlValue = 0.0f;
 uint8_t ifManualControlStarted = 0;
 uint8_t ifIMUFeedbackStarted = 0;
 enum ControlMode controlMode = AK10_9_MODE_POSITION;
