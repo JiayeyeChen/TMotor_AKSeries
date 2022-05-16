@@ -22,6 +22,8 @@ float impedance_control_spring_constant = 0.0f;
 float impedance_control_damping_constant = 0.0f;
 uint8_t ifImpedanceControlStarted = 0;
 
+float tmotorProfilingSinWaveFrequency = 0.0f;
+
 void MotorInit(void)
 {
   hAKMotorRightHip.hcan = &hcan2;
@@ -37,13 +39,13 @@ void MotorInit(void)
   hAKMotorRightKnee.kt = 1.2138f;
 }
 
-void AK10_9_MotorProfiling_Function1(AK10_9Handle* hmotor)
+void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9Handle* hmotor, float frequency)
 {
   float t = (float)(HAL_GetTick() - timeDifference) / 1000.0f;
-  motor_profiling_trajectory = 180.0f * (float)sin((2.0f*pi / 6.0f) * t);
+  motor_profiling_trajectory = 180.0f * (float)sin(frequency * 2.0f * pi * t);
   
-//  AK10_9_ImpedanceControl(hmotor, 0.03f, 0.009, motor_profiling_trajectory);
   AK10_9_ServoMode_PositionControl(hmotor, motor_profiling_trajectory);
+  hmotor->setAcceleration.f = -180.0f * pow(2.0f * pi * frequency, 2.0f) * sin(frequency * 2.0f * pi * t);
 }
 
 void AK10_9_MotorProfiling_Function2_CurrentControlStepResponse(AK10_9Handle* hmotor)
@@ -81,8 +83,8 @@ void AK10_9_ImpedanceControl(AK10_9Handle* hmotor, float spring_constant, float 
 
 void AK10_9_Set_DataLog_Label(void)
 {
-  USB_SendDataSlotLabel("13", "P desired (rad)", "P mes (rad)", "V mes (rad/s)", \
-                        "A mes (rad/s2)", "LiAccX (m/s2)", "LiAccY (m/s2)", "LiAccZ (m/s2)", \
+  USB_SendDataSlotLabel("14", "P desired (rad)", "P mes (rad)", "V mes (rad/s)", \
+                        "A des (rad/s2)", "A mes (rad/s2)", "LiAccX (m/s2)", "LiAccY (m/s2)", "LiAccZ (m/s2)", \
                         "GyroX (rad/s)", "GyroY (rad/s)", "GyroZ (rad/s)", \
                         "RtAccXGyro (rad/s2)", "RtAccYGyro (rad/s2)", "RtAccZGyro (rad/s2)");
 }
@@ -93,7 +95,8 @@ void AK10_9_DataLog_Update_Data_Slots(AK10_9Handle* hmotor, BNO055Handle* himu)
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setPosition.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realPosition.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realVelocity.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = 0.0f;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setAcceleration.f;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->estimateAcceleration.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.AccX.b16;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.AccY.b16;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.AccZ.b16;

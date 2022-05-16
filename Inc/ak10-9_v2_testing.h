@@ -17,7 +17,7 @@ enum ControlMode
 };
 
 void MotorInit(void);
-void AK10_9_MotorProfiling_Function1(AK10_9Handle* hmotor);
+void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9Handle* hmotor, float frequency);
 void AK10_9_MotorProfiling_Function2_CurrentControlStepResponse(AK10_9Handle* hmotor);
 void AK10_9_Calculate_velocity_current_AVG(AK10_9Handle* hmotor);
 void AK10_9_ImpedanceControl(AK10_9Handle* hmotor, float spring_constant, float damping_constant, float center_position);
@@ -39,4 +39,5 @@ extern uint8_t ifIMUFeedbackStarted;
 extern float manualControlValue_pos;
 extern float manualControlValue_vel;
 extern float manualControlValue_cur;
+extern float tmotorProfilingSinWaveFrequency;
 #endif
