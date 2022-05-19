@@ -2,6 +2,8 @@
 
 AK10_9Handle hAKMotorLeftHip, hAKMotorLeftKnee, hAKMotorRightHip, hAKMotorRightKnee;
 AK10_9Handle* hMotorPtrManualControl;
+TMotorStaticTorqueConstantHandle hStaticTorqueConstantTesting;
+
 
 float motor_profiling_trajectory = 0.0f;
 float manualControlValue_pos = 0.0f;
@@ -81,12 +83,17 @@ void AK10_9_ImpedanceControl(AK10_9Handle* hmotor, float spring_constant, float 
   AK10_9_ServoMode_CurrentControl(hmotor, setCurrent);
 }
 
-void AK10_9_Set_DataLog_Label(void)
+void AK10_9_Set_DataLog_Label_Acceleration_Observer(void)
 {
   USB_SendDataSlotLabel("14", "P desired (rad)", "P mes (rad)", "V mes (rad/s)", \
                         "A des (rad/s2)", "A mes (rad/s2)", "LiAccX (m/s2)", "LiAccY (m/s2)", "LiAccZ (m/s2)", \
                         "GyroX (rad/s)", "GyroY (rad/s)", "GyroZ (rad/s)", \
                         "RtAccXGyro (rad/s2)", "RtAccYGyro (rad/s2)", "RtAccZGyro (rad/s2)");
+}
+
+void AK10_9_Set_DataLog_Label_Torque_Constant_Testing(void)
+{
+  USB_SendDataSlotLabel("2", "Torque(Nm)", "Iq(A)");
 }
 
 void AK10_9_DataLog_Update_Data_Slots(AK10_9Handle* hmotor, BNO055Handle* himu)
@@ -111,6 +118,63 @@ void AK10_9_DataLog_Update_Data_Slots(AK10_9Handle* hmotor, BNO055Handle* himu)
 
 void AK10_9_DataLog_Manager(AK10_9Handle* hmotor, BNO055Handle* himu)
 {
-  USB_DataLogManager(AK10_9_Set_DataLog_Label, dataSlots_AK10_9_Acceleration_Observer_Testing);
+  USB_DataLogManager(AK10_9_Set_DataLog_Label_Acceleration_Observer, dataSlots_AK10_9_Acceleration_Observer_Testing);
   AK10_9_DataLog_Update_Data_Slots(hmotor, himu);
+}
+
+void AK10_9_StaticTorqueConstantTestingManager(AK10_9Handle* hmotor, float iq_step, float iq_max, float iq_sign, uint32_t sampling_num_per_step)
+{
+  if (hStaticTorqueConstantTesting.ifTestingStarted)
+  {
+    
+    //Iq tracking is considered stable
+    if (hStaticTorqueConstantTesting.ifCurStable)
+    {
+      //Data sampling count reaches the max limit
+      if (hStaticTorqueConstantTesting.curSamplingCount++ >= sampling_num_per_step)
+      {
+        hStaticTorqueConstantTesting.curSamplingCount = 0;
+        hStaticTorqueConstantTesting.curSetIq += (iq_sign * iq_step);
+        if (fabs(hStaticTorqueConstantTesting.curSetIq) > iq_max)
+        {
+          hStaticTorqueConstantTesting.ifTestingFinished = 1;
+          hStaticTorqueConstantTesting.ifTestingStarted = 0;
+          USB_DataLogEnd();
+          return;
+        }
+        
+        hStaticTorqueConstantTesting.curNewSetTimeStamp = HAL_GetTick();
+        hStaticTorqueConstantTesting.ifCurStable = 0;
+      }
+      //Data sampling still within the max limit
+      else
+      {
+        dataSlots_AK10_9_TorqueConstantTesting[0].f = hStaticTorqueConstantTesting.torqueMeasured;
+        dataSlots_AK10_9_TorqueConstantTesting[1].f = hmotor->realCurrent.f;
+        hUSB.ifNewDataLogPiece2Send = 1;
+        USB_DataLogManager(AK10_9_Set_DataLog_Label_Torque_Constant_Testing, dataSlots_AK10_9_TorqueConstantTesting);
+        hStaticTorqueConstantTesting.curSamplingCount++;
+      }
+    }
+    //Iq tracking is considered unstable
+    else
+    {
+      if (HAL_GetTick() - hStaticTorqueConstantTesting.curNewSetTimeStamp > 500)
+      {
+        hStaticTorqueConstantTesting.ifCurStable = 1;
+        hStaticTorqueConstantTesting.curSamplingCount = 0;
+      }
+    }
+    AK10_9_ServoMode_CurrentControl(hmotor, hStaticTorqueConstantTesting.curSetIq);
+  }
+}
+
+void AK10_9_StaticTorqueConstantTesting_Init(void)
+{
+  hStaticTorqueConstantTesting.ifTestingStarted = 0;
+  hStaticTorqueConstantTesting.ifTestingFinished = 0;
+  hStaticTorqueConstantTesting.curSamplingCount = 0;
+  hStaticTorqueConstantTesting.curSetIq = 0.0f;
+  hStaticTorqueConstantTesting.curNewSetTimeStamp = 0;
+  hStaticTorqueConstantTesting.ifCurStable = 0;
 }
