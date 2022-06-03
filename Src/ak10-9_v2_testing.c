@@ -1,7 +1,8 @@
 #include "ak10-9_v2_testing.h"
 
-AK10_9Handle hAKMotorLeftHip, hAKMotorLeftKnee, hAKMotorRightHip, hAKMotorRightKnee;
-AK10_9Handle* hMotorPtrManualControl;
+AK10_9HandleCubaMarsFW hAKMotorLeftHip, hAKMotorLeftKnee, hAKMotorRightHip, hAKMotorRightKnee;
+AK10_9HandleCubaMarsFW* hMotorPtrManualControl;
+AK10_9HandleDMFW hAKMotorDMFW1, hAKMotorDMFW2, hAKMotorDMFW3;
 TMotorStaticTorqueConstantHandle hStaticTorqueConstantTesting;
 
 
@@ -9,11 +10,12 @@ float motor_profiling_trajectory = 0.0f;
 float manualControlValue_pos = 0.0f;
 float manualControlValue_vel = 0.0f;
 float manualControlValue_cur = 0.0f;
+float manualControlValue_kp = 0.0f, manualControlValue_kd = 0.0f;
 uint8_t ifMotorProfilingStarted = 0;
 uint32_t timeDifference = 0;
 uint8_t ifManualControlStarted = 0;
 uint8_t ifIMUFeedbackStarted = 0;
-enum ControlMode controlMode = AK10_9_MODE_POSITION;
+enum ControlModeCubeMarsFW controlModeCubeMarsFW = AK10_9_CUBEMARS_FW_MODE_POSITION;
 
 float velocityAVG[1024] = {0};
 uint16_t velocityAVGPtr = 1;
@@ -39,9 +41,36 @@ void MotorInit(void)
   hAKMotorRightKnee.lastReceivedTime = 0;
   hAKMotorRightKnee.status = AK10_9_Offline;
   hAKMotorRightKnee.kt = 1.2138f;
+  
+  hAKMotorDMFW1.canID = 0X01;
+  hAKMotorDMFW1.hcan = &hcan2;
+  hAKMotorDMFW1.lastReceivedTime = 0;
+  hAKMotorDMFW1.status = AK10_9_Offline;
+  hAKMotorDMFW1.kt = 1.2138f;
+  hAKMotorDMFW1.kp.f = 0.0f;
+  hAKMotorDMFW1.kd.f = 0.0f;
+  hAKMotorDMFW1.controlMode = AK10_9_DM_FW_MODE_MIT;
+  
+  hAKMotorDMFW2.canID = 0X02;
+  hAKMotorDMFW2.hcan = &hcan2;
+  hAKMotorDMFW2.lastReceivedTime = 0;
+  hAKMotorDMFW2.status = AK10_9_Offline;
+  hAKMotorDMFW2.kt = 1.2138f;
+  hAKMotorDMFW2.kp.f = 0.0f;
+  hAKMotorDMFW2.kd.f = 0.0f;
+  hAKMotorDMFW2.controlMode = AK10_9_DM_FW_MODE_MIT;
+  
+  hAKMotorDMFW3.canID = 0X03;
+  hAKMotorDMFW3.hcan = &hcan2;
+  hAKMotorDMFW3.lastReceivedTime = 0;
+  hAKMotorDMFW3.status = AK10_9_Offline;
+  hAKMotorDMFW3.kt = 1.2138f;
+  hAKMotorDMFW3.kp.f = 0.0f;
+  hAKMotorDMFW3.kd.f = 0.0f;
+  hAKMotorDMFW3.controlMode = AK10_9_DM_FW_MODE_MIT;
 }
 
-void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9Handle* hmotor, float frequency)
+void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9HandleCubaMarsFW* hmotor, float frequency)
 {
   float t = (float)(HAL_GetTick() - timeDifference) / 1000.0f;
   motor_profiling_trajectory = 180.0f * (float)sin(frequency * 2.0f * pi * t);
@@ -50,12 +79,12 @@ void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9Handle* hmotor, float freque
   hmotor->setAcceleration.f = -180.0f * pow(2.0f * pi * frequency, 2.0f) * sin(frequency * 2.0f * pi * t);
 }
 
-void AK10_9_MotorProfiling_Function2_CurrentControlStepResponse(AK10_9Handle* hmotor)
+void AK10_9_MotorProfiling_Function2_CurrentControlStepResponse(AK10_9HandleCubaMarsFW* hmotor)
 {
   AK10_9_ServoMode_CurrentControl(hmotor, -1.0f);
 }
 
-void AK10_9_Calculate_velocity_current_AVG(AK10_9Handle* hmotor)
+void AK10_9_Calculate_velocity_current_AVG(AK10_9HandleCubaMarsFW* hmotor)
 {
   velocityAVG[velocityAVGPtr++] = hmotor->realVelocity.f;
   if (velocityAVGPtr == 1023)
@@ -74,7 +103,7 @@ void AK10_9_Calculate_velocity_current_AVG(AK10_9Handle* hmotor)
   currentAVG[0] /= 1023.0f;
 }
 
-void AK10_9_ImpedanceControl(AK10_9Handle* hmotor, float spring_constant, float damping_constant, float center_position)
+void AK10_9_ImpedanceControl(AK10_9HandleCubaMarsFW* hmotor, float spring_constant, float damping_constant, float center_position)
 {
   spring_constant = fabs(spring_constant);
   damping_constant = fabs(damping_constant);
@@ -96,7 +125,7 @@ void AK10_9_Set_DataLog_Label_Torque_Constant_Testing(void)
   USB_SendDataSlotLabel("2", "Torque(Nm)", "Iq(A)");
 }
 
-void AK10_9_DataLog_Update_Data_Slots(AK10_9Handle* hmotor, BNO055Handle* himu)
+void AK10_9_DataLog_Update_Data_Slots(AK10_9HandleCubaMarsFW* hmotor, BNO055Handle* himu)
 {
   uint8_t ptr = 0;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setPosition.f;
@@ -116,13 +145,13 @@ void AK10_9_DataLog_Update_Data_Slots(AK10_9Handle* hmotor, BNO055Handle* himu)
   hUSB.ifNewDataLogPiece2Send = 1;
 }
 
-void AK10_9_DataLog_Manager(AK10_9Handle* hmotor, BNO055Handle* himu)
+void AK10_9_DataLog_Manager(AK10_9HandleCubaMarsFW* hmotor, BNO055Handle* himu)
 {
   USB_DataLogManager(AK10_9_Set_DataLog_Label_Acceleration_Observer, dataSlots_AK10_9_Acceleration_Observer_Testing);
   AK10_9_DataLog_Update_Data_Slots(hmotor, himu);
 }
 
-void AK10_9_StaticTorqueConstantTestingManager(AK10_9Handle* hmotor, float iq_step, float iq_max, float iq_sign, uint32_t sampling_num_per_step)
+void AK10_9_StaticTorqueConstantTestingManager(AK10_9HandleCubaMarsFW* hmotor, float iq_step, float iq_max, float iq_sign, uint32_t sampling_num_per_step)
 {
   if (hStaticTorqueConstantTesting.ifTestingStarted)
   {
