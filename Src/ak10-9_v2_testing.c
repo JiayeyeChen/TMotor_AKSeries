@@ -35,14 +35,28 @@ void MotorInit(void)
   hAKMotorRightHip.lastReceivedTime = 0;
   hAKMotorRightHip.status = AK10_9_Offline;
   hAKMotorRightHip.kt = 1.2138f;
+  hAKMotorRightHip.accAvgPtr = 0;
+  hAKMotorRightHip.realAccelerationFiltered.f = 0.0f;
+  hAKMotorRightHip.realAccelerationFilteredPrevious = 0.0f;
+  hAKMotorRightHip.realAccelerationRaw.f = 0.0f;
+  hAKMotorRightHip.cutOffFrequency = 14.043;
+  hAKMotorRightHip.timeDuration = 1.0f / 500.0f;
+  hAKMotorRightHip.alpha = 2.0f * pi * hAKMotorRightHip.cutOffFrequency * hAKMotorRightHip.timeDuration / (1.0f + 2.0f * pi * hAKMotorRightHip.cutOffFrequency * hAKMotorRightHip.timeDuration);
   
   hAKMotorRightKnee.hcan = &hcan2;
   hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE;
   hAKMotorRightKnee.lastReceivedTime = 0;
   hAKMotorRightKnee.status = AK10_9_Offline;
   hAKMotorRightKnee.kt = 1.2138f;
+  hAKMotorRightKnee.accAvgPtr = 0;
+  hAKMotorRightKnee.realAccelerationFiltered.f = 0.0f;
+  hAKMotorRightKnee.realAccelerationFilteredPrevious = 0.0f;
+  hAKMotorRightKnee.realAccelerationRaw.f = 0.0f;
+  hAKMotorRightKnee.cutOffFrequency = 14.043;
+  hAKMotorRightKnee.timeDuration = 1.0f / 500.0f;
+  hAKMotorRightKnee.alpha = hAKMotorRightKnee.cutOffFrequency * hAKMotorRightKnee.timeDuration / (1.0f + hAKMotorRightKnee.cutOffFrequency * hAKMotorRightKnee.timeDuration);
   
-  hAKMotorDMFW1.canID = 0X01;
+  hAKMotorDMFW1.canID = 0x01;
   hAKMotorDMFW1.hcan = &hcan2;
   hAKMotorDMFW1.lastReceivedTime = 0;
   hAKMotorDMFW1.status = AK10_9_Offline;
@@ -51,7 +65,7 @@ void MotorInit(void)
   hAKMotorDMFW1.kd.f = 0.0f;
   hAKMotorDMFW1.controlMode = AK10_9_DM_FW_MODE_MIT;
   
-  hAKMotorDMFW2.canID = 0X02;
+  hAKMotorDMFW2.canID = 0x02;
   hAKMotorDMFW2.hcan = &hcan2;
   hAKMotorDMFW2.lastReceivedTime = 0;
   hAKMotorDMFW2.status = AK10_9_Offline;
@@ -60,7 +74,7 @@ void MotorInit(void)
   hAKMotorDMFW2.kd.f = 0.0f;
   hAKMotorDMFW2.controlMode = AK10_9_DM_FW_MODE_MIT;
   
-  hAKMotorDMFW3.canID = 0X03;
+  hAKMotorDMFW3.canID = 0x03;
   hAKMotorDMFW3.hcan = &hcan2;
   hAKMotorDMFW3.lastReceivedTime = 0;
   hAKMotorDMFW3.status = AK10_9_Offline;
@@ -77,6 +91,7 @@ void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9HandleCubaMarsFW* hmotor, fl
   
   AK10_9_ServoMode_PositionControl(hmotor, motor_profiling_trajectory);
   hmotor->setAcceleration.f = -180.0f * pow(2.0f * pi * frequency, 2.0f) * sin(frequency * 2.0f * pi * t);
+  hmotor->setAcceleration_ByRealPosition.f = -pow(2.0f * pi * frequency, 2.0f) * hmotor->realPosition.f;
 }
 
 void AK10_9_MotorProfiling_Function2_CurrentControlStepResponse(AK10_9HandleCubaMarsFW* hmotor)
@@ -86,7 +101,7 @@ void AK10_9_MotorProfiling_Function2_CurrentControlStepResponse(AK10_9HandleCuba
 
 void AK10_9_Calculate_velocity_current_AVG(AK10_9HandleCubaMarsFW* hmotor)
 {
-  velocityAVG[velocityAVGPtr++] = hmotor->realVelocity.f;
+  velocityAVG[velocityAVGPtr++] = hmotor->realVelocityPresent.f;
   if (velocityAVGPtr == 1023)
     velocityAVGPtr = 1;
   velocityAVG[0] = 0.0f;
@@ -108,16 +123,16 @@ void AK10_9_ImpedanceControl(AK10_9HandleCubaMarsFW* hmotor, float spring_consta
   spring_constant = fabs(spring_constant);
   damping_constant = fabs(damping_constant);
   
-  float setCurrent = spring_constant * (hmotor->realPosition.f - center_position) - damping_constant * hmotor->realVelocity.f;
+  float setCurrent = spring_constant * (hmotor->realPosition.f - center_position) - damping_constant * hmotor->realVelocityPresent.f;
   AK10_9_ServoMode_CurrentControl(hmotor, setCurrent);
 }
 
 void AK10_9_Set_DataLog_Label_Acceleration_Observer(void)
 {
-  USB_SendDataSlotLabel("14", "P desired (rad)", "P mes (rad)", "V mes (rad/s)", \
-                        "A des (rad/s2)", "A mes (rad/s2)", "LiAccX (m/s2)", "LiAccY (m/s2)", "LiAccZ (m/s2)", \
-                        "GyroX (rad/s)", "GyroY (rad/s)", "GyroZ (rad/s)", \
-                        "RtAccXGyro (rad/s2)", "RtAccYGyro (rad/s2)", "RtAccZGyro (rad/s2)");
+  USB_SendDataSlotLabel("8", "P desired (rad)", "P mes (rad)", "V mes (rad/s)", \
+                        "Acc desired (deg/s)", "Acc raw (deg/s)", \
+                        "Acc desired by real pos (deg/s)", "Acc filtered (deg/s)", \
+                        "Acc estimation error");
 }
 
 void AK10_9_Set_DataLog_Label_Torque_Constant_Testing(void)
@@ -130,18 +145,12 @@ void AK10_9_DataLog_Update_Data_Slots(AK10_9HandleCubaMarsFW* hmotor, BNO055Hand
   uint8_t ptr = 0;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setPosition.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realPosition.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realVelocity.f;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realVelocityPresent.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setAcceleration.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->estimateAcceleration.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.AccX.b16;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.AccY.b16;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.AccZ.b16;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.gyroX.b16;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.gyroY.b16;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = (float)himu->rawData.gyroZ.b16;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = 0.0f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = 0.0f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = 0.0f;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realAccelerationRaw.f;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setAcceleration_ByRealPosition.f;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realAccelerationFiltered.f;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realAccelerationFiltered.f - hmotor->setAcceleration_ByRealPosition.f;
   hUSB.ifNewDataLogPiece2Send = 1;
 }
 
