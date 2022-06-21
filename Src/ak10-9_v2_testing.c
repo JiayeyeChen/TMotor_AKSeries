@@ -36,7 +36,7 @@ void MotorInit(void)
   hAKMotorRightHip.status = AK10_9_Offline;
   hAKMotorRightHip.kt = 1.2138f;
   hAKMotorRightHip.accAvgPtr = 0;
-  hAKMotorRightHip.posOffset = 320.0f;
+  hAKMotorRightHip.posOffset = 210.0f;
   hAKMotorRightHip.posDirectionCorrection = -1.0f;
   hAKMotorRightHip.realAccelerationFiltered.f = 0.0f;
   hAKMotorRightHip.realAccelerationFilteredPrevious = 0.0f;
@@ -75,7 +75,7 @@ void MotorInit(void)
   hAKMotorRightKnee.status = AK10_9_Offline;
   hAKMotorRightKnee.kt = 1.2138f;
   hAKMotorRightKnee.accAvgPtr = 0;
-  hAKMotorRightKnee.posOffset = 216.0f;
+  hAKMotorRightKnee.posOffset = 0.0f;
   hAKMotorRightKnee.posDirectionCorrection = -1.0f;
   hAKMotorRightKnee.realAccelerationFiltered.f = 0.0f;
   hAKMotorRightKnee.realAccelerationFilteredPrevious = 0.0f;
