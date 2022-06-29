@@ -16,18 +16,6 @@ enum ControlModeCubeMarsFW
   AK10_9_CUBEMARS_FW_MODE_BRAKE
 };
 
-typedef struct
-{
-  uint8_t ifTestingStarted;
-  uint8_t ifTestingFinished;
-  uint8_t curSamplingCount;
-  float   curSetIq;
-  uint8_t ifCurStable;
-  uint32_t  curNewSetTimeStamp;
-  float   torqueMeasured;
-  
-}TMotorStaticTorqueConstantHandle;
-
 void MotorInit(void);
 void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9HandleCubaMarsFW* hmotor, float frequency);
 void AK10_9_MotorProfiling_Function2_CurrentControlStepResponse(AK10_9HandleCubaMarsFW* hmotor);
@@ -37,10 +25,6 @@ void AK10_9_ImpedanceControl(AK10_9HandleCubaMarsFW* hmotor, float spring_consta
 void AK10_9_DataLog_Update_Data_Slots(AK10_9HandleCubaMarsFW* hmotor, BNO055Handle* himu);
 void AK10_9_DataLog_Manager(AK10_9HandleCubaMarsFW* hmotor, BNO055Handle* himu);
 void AK10_9_Set_DataLog_Label_Acceleration_Observer(void);
-void AK10_9_Set_DataLog_Label_Torque_Constant_Testing(void);
-void AK10_9_StaticTorqueConstantTestingManager(AK10_9HandleCubaMarsFW* hmotor, float iq_step, float iq_max, float iq_sign, uint32_t sampling_num_per_step);
-void AK10_9_StaticTorqueConstantTesting_Init(void);
-
 
 extern AK10_9HandleCubaMarsFW hAKMotorLeftHip, hAKMotorLeftKnee, hAKMotorRightHip, hAKMotorRightKnee;
 extern AK10_9HandleDMFW hAKMotorDMFW1, hAKMotorDMFW2, hAKMotorDMFW3;
@@ -58,6 +42,5 @@ extern float manualControlValue_vel;
 extern float manualControlValue_cur;
 extern float manualControlValue_kp, manualControlValue_kd;
 extern float tmotorProfilingSinWaveFrequency;
-extern TMotorStaticTorqueConstantHandle hStaticTorqueConstantTesting;
 
 #endif

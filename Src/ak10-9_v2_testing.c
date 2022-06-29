@@ -3,8 +3,6 @@
 AK10_9HandleCubaMarsFW hAKMotorLeftHip, hAKMotorLeftKnee, hAKMotorRightHip, hAKMotorRightKnee;
 AK10_9HandleCubaMarsFW* hMotorPtrManualControl;
 AK10_9HandleDMFW hAKMotorDMFW1, hAKMotorDMFW2, hAKMotorDMFW3;
-TMotorStaticTorqueConstantHandle hStaticTorqueConstantTesting;
-
 
 float motor_profiling_trajectory = 0.0f;
 float manualControlValue_pos = 0.0f;
@@ -44,7 +42,8 @@ void MotorInit(void)
   hAKMotorRightHip.cutOffFrequency = 14.043;
   hAKMotorRightHip.timeDuration = 1.0f / 500.0f;
   hAKMotorRightHip.alpha = 2.0f * pi * hAKMotorRightHip.cutOffFrequency * hAKMotorRightHip.timeDuration / (1.0f + 2.0f * pi * hAKMotorRightHip.cutOffFrequency * hAKMotorRightHip.timeDuration);
-//cut-off frequency = 15 hz
+  hAKMotorRightHip.ifCustomizedPositionSpeedControlFinished = 1;
+  //cut-off frequency = 15 hz
 //  hAKMotorRightHip.a2Butter = -1.7347f;
 //  hAKMotorRightHip.a3Butter = 0.766f;
 //  hAKMotorRightHip.b1Butter = 0.0078f;
@@ -83,6 +82,7 @@ void MotorInit(void)
   hAKMotorRightKnee.cutOffFrequency = 14.043;
   hAKMotorRightKnee.timeDuration = 1.0f / 500.0f;
   hAKMotorRightKnee.alpha = hAKMotorRightKnee.cutOffFrequency * hAKMotorRightKnee.timeDuration / (1.0f + hAKMotorRightKnee.cutOffFrequency * hAKMotorRightKnee.timeDuration);
+  hAKMotorRightKnee.ifCustomizedPositionSpeedControlFinished = 1;
   //cut-off frequency = 4 hz
   hAKMotorRightKnee.a2Butter = -1.9289f;
   hAKMotorRightKnee.a3Butter = 0.9314;
@@ -170,10 +170,6 @@ void AK10_9_Set_DataLog_Label_Acceleration_Observer(void)
                         "Acc estimation error", "AccXIMU (m/s2)", "AccYIMU (m/s2)", "AccZIMU (m/s2)");
 }
 
-void AK10_9_Set_DataLog_Label_Torque_Constant_Testing(void)
-{
-  USB_SendDataSlotLabel("2", "Torque(Nm)", "Iq(A)");
-}
 
 void AK10_9_DataLog_Update_Data_Slots(AK10_9HandleCubaMarsFW* hmotor, BNO055Handle* himu)
 {
@@ -198,59 +194,6 @@ void AK10_9_DataLog_Manager(AK10_9HandleCubaMarsFW* hmotor, BNO055Handle* himu)
   AK10_9_DataLog_Update_Data_Slots(hmotor, himu);
 }
 
-void AK10_9_StaticTorqueConstantTestingManager(AK10_9HandleCubaMarsFW* hmotor, float iq_step, float iq_max, float iq_sign, uint32_t sampling_num_per_step)
-{
-  if (hStaticTorqueConstantTesting.ifTestingStarted)
-  {
-    
-    //Iq tracking is considered stable
-    if (hStaticTorqueConstantTesting.ifCurStable)
-    {
-      //Data sampling count reaches the max limit
-      if (hStaticTorqueConstantTesting.curSamplingCount++ >= sampling_num_per_step)
-      {
-        hStaticTorqueConstantTesting.curSamplingCount = 0;
-        hStaticTorqueConstantTesting.curSetIq += (iq_sign * iq_step);
-        if (fabs(hStaticTorqueConstantTesting.curSetIq) > iq_max)
-        {
-          hStaticTorqueConstantTesting.ifTestingFinished = 1;
-          hStaticTorqueConstantTesting.ifTestingStarted = 0;
-          USB_DataLogEnd();
-          return;
-        }
-        
-        hStaticTorqueConstantTesting.curNewSetTimeStamp = HAL_GetTick();
-        hStaticTorqueConstantTesting.ifCurStable = 0;
-      }
-      //Data sampling still within the max limit
-      else
-      {
-        dataSlots_AK10_9_TorqueConstantTesting[0].f = hStaticTorqueConstantTesting.torqueMeasured;
-        dataSlots_AK10_9_TorqueConstantTesting[1].f = hmotor->realCurrent.f;
-        hUSB.ifNewDataLogPiece2Send = 1;
-        USB_DataLogManager(AK10_9_Set_DataLog_Label_Torque_Constant_Testing, dataSlots_AK10_9_TorqueConstantTesting);
-        hStaticTorqueConstantTesting.curSamplingCount++;
-      }
-    }
-    //Iq tracking is considered unstable
-    else
-    {
-      if (HAL_GetTick() - hStaticTorqueConstantTesting.curNewSetTimeStamp > 500)
-      {
-        hStaticTorqueConstantTesting.ifCurStable = 1;
-        hStaticTorqueConstantTesting.curSamplingCount = 0;
-      }
-    }
-    AK10_9_ServoMode_CurrentControl(hmotor, hStaticTorqueConstantTesting.curSetIq);
-  }
-}
 
-void AK10_9_StaticTorqueConstantTesting_Init(void)
-{
-  hStaticTorqueConstantTesting.ifTestingStarted = 0;
-  hStaticTorqueConstantTesting.ifTestingFinished = 0;
-  hStaticTorqueConstantTesting.curSamplingCount = 0;
-  hStaticTorqueConstantTesting.curSetIq = 0.0f;
-  hStaticTorqueConstantTesting.curNewSetTimeStamp = 0;
-  hStaticTorqueConstantTesting.ifCurStable = 0;
-}
+
+
