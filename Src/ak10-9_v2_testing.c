@@ -26,10 +26,10 @@ uint8_t ifImpedanceControlStarted = 0;
 
 float tmotorProfilingSinWaveFrequency = 0.0f;
 
-void MotorInit(void)
+void EXOSKELETON_MotorInit(void)
 {
   hAKMotorRightHip.hcan = &hcan2;
-  hAKMotorRightHip.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_HIP;
+  hAKMotorRightHip.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_HIP_MIT_MODE;
   hAKMotorRightHip.lastReceivedTime = 0;
   hAKMotorRightHip.status = AK10_9_Offline;
   hAKMotorRightHip.kt = 1.304f;
@@ -69,7 +69,7 @@ void MotorInit(void)
   hAKMotorRightHip.b3Butter = 0.0006;
   
   hAKMotorRightKnee.hcan = &hcan2;
-  hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE;
+  hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE_MIT_MODE;
   hAKMotorRightKnee.lastReceivedTime = 0;
   hAKMotorRightKnee.status = AK10_9_Offline;
   hAKMotorRightKnee.kt = 1.220383f;
@@ -90,7 +90,10 @@ void MotorInit(void)
   hAKMotorRightKnee.b2Butter = 0.0012;
   hAKMotorRightKnee.b3Butter = 0.0006;
   
-  
+}
+
+void MotorInit_DMFW(void)
+{
   hAKMotorDMFW1.canID = 0x01;
   hAKMotorDMFW1.hcan = &hcan2;
   hAKMotorDMFW1.lastReceivedTime = 0;

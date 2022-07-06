@@ -16,7 +16,8 @@ enum ControlModeCubeMarsFW
   AK10_9_CUBEMARS_FW_MODE_BRAKE
 };
 
-void MotorInit(void);
+void EXOSKELETON_MotorInit(void);
+void MotorInit_DMFW(void);
 void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9HandleCubaMarsFW* hmotor, float frequency);
 void AK10_9_MotorProfiling_Function2_CurrentControlStepResponse(AK10_9HandleCubaMarsFW* hmotor);
 void AK10_9_Calculate_velocity_current_AVG(AK10_9HandleCubaMarsFW* hmotor);
