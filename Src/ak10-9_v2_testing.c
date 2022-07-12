@@ -43,30 +43,18 @@ void EXOSKELETON_MotorInit(void)
   hAKMotorRightHip.timeDuration = 1.0f / 500.0f;
   hAKMotorRightHip.alpha = 2.0f * pi * hAKMotorRightHip.cutOffFrequency * hAKMotorRightHip.timeDuration / (1.0f + 2.0f * pi * hAKMotorRightHip.cutOffFrequency * hAKMotorRightHip.timeDuration);
   hAKMotorRightHip.ifCustomizedPositionSpeedControlFinished = 1;
-  //cut-off frequency = 15 hz
-//  hAKMotorRightHip.a2Butter = -1.7347f;
-//  hAKMotorRightHip.a3Butter = 0.766f;
-//  hAKMotorRightHip.b1Butter = 0.0078f;
-//  hAKMotorRightHip.b2Butter = 0.0156f;
-//  hAKMotorRightHip.b3Butter = 0.0078f;
-//cut-off frequency = 2 hz
-//  hAKMotorRightHip.a2Butter = -1.9467f;
-//  hAKMotorRightHip.a3Butter = 0.9481f;
-//  hAKMotorRightHip.b1Butter = 0.00346f;
-//  hAKMotorRightHip.b2Butter = 0.006921f;
-//  hAKMotorRightHip.b3Butter = 0.00346f;
-//cut-off frequency = 6 hz
-//  hAKMotorRightHip.a2Butter = -1.8935f;
-//  hAKMotorRightHip.a3Butter = 0.8989;
-//  hAKMotorRightHip.b1Butter = 0.0013f;
-//  hAKMotorRightHip.b2Butter = 0.0027f;
-//  hAKMotorRightHip.b3Butter = 0.0013f;
-//cut-off frequency = 4 hz
-  hAKMotorRightHip.a2Butter = -1.9289f;
-  hAKMotorRightHip.a3Butter = 0.9314;
-  hAKMotorRightHip.b1Butter = 0.0006;
-  hAKMotorRightHip.b2Butter = 0.0012;
-  hAKMotorRightHip.b3Butter = 0.0006;
+//cut-off frequency = 4 hz sampling rate 1000hz(no problem)
+  hAKMotorRightHip.a2Butter = -1.9645;
+  hAKMotorRightHip.a3Butter = 0.9651;
+  hAKMotorRightHip.b1Butter = 0.0001551;
+  hAKMotorRightHip.b2Butter = 0.0003103;
+  hAKMotorRightHip.b3Butter = 0.0001551;
+//cut-off frequency = 3 hz sampling rate 1000hz(no problem)
+//  hAKMotorRightHip.a2Butter = -1.9733;
+//  hAKMotorRightHip.a3Butter = 0.9737;
+//  hAKMotorRightHip.b1Butter = 0.0000877;
+//  hAKMotorRightHip.b2Butter = 0.0001753;
+//  hAKMotorRightHip.b3Butter = 0.0000877;
   
   hAKMotorRightKnee.hcan = &hcan2;
   hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE_MIT_MODE;
@@ -83,12 +71,12 @@ void EXOSKELETON_MotorInit(void)
   hAKMotorRightKnee.timeDuration = 1.0f / 500.0f;
   hAKMotorRightKnee.alpha = hAKMotorRightKnee.cutOffFrequency * hAKMotorRightKnee.timeDuration / (1.0f + hAKMotorRightKnee.cutOffFrequency * hAKMotorRightKnee.timeDuration);
   hAKMotorRightKnee.ifCustomizedPositionSpeedControlFinished = 1;
-  //cut-off frequency = 4 hz
-  hAKMotorRightKnee.a2Butter = -1.9289f;
-  hAKMotorRightKnee.a3Butter = 0.9314;
-  hAKMotorRightKnee.b1Butter = 0.0006;
-  hAKMotorRightKnee.b2Butter = 0.0012;
-  hAKMotorRightKnee.b3Butter = 0.0006;
+//cut-off frequency = 4 hz sampling rate 1000hz(no problem)
+  hAKMotorRightKnee.a2Butter = -1.9645;
+  hAKMotorRightKnee.a3Butter = 0.9651;
+  hAKMotorRightKnee.b1Butter = 0.0001551;
+  hAKMotorRightKnee.b2Butter = 0.0003103;
+  hAKMotorRightKnee.b3Butter = 0.0001551;
   
 }
 
@@ -127,7 +115,10 @@ void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9HandleCubaMarsFW* hmotor, fl
   float t = (float)(HAL_GetTick() - timeDifference) / 1000.0f;
   motor_profiling_trajectory = 180.0f * (float)sin(frequency * 2.0f * pi * t);
   
-  AK10_9_ServoMode_PositionControl(hmotor, motor_profiling_trajectory);
+  /* for Servo Mode*/
+//  AK10_9_ServoMode_PositionControl(hmotor, motor_profiling_trajectory);
+  /* for MIT Mode*/
+  AK10_9_MITModeControl(hmotor, motor_profiling_trajectory, 0.0f, 35.0f, 3.25f, 0.0f);
   hmotor->setAcceleration.f = -180.0f * pow(2.0f * pi * frequency, 2.0f) * sin(frequency * 2.0f * pi * t);
   hmotor->setAcceleration_ByRealPosition.f = -pow(2.0f * pi * frequency, 2.0f) * hmotor->realPosition.f;
 }
@@ -185,7 +176,7 @@ void AK10_9_DataLog_Update_Data_Slots(AK10_9HandleCubaMarsFW* hmotor, BNO055Hand
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setAcceleration_ByRealPosition.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realAccelerationFiltered.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realAccelerationFiltered.f - hmotor->setAcceleration_ByRealPosition.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.AccX.f * 200.0f;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.AccX.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.AccY.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.AccZ.f;
   hUSB.ifNewDataLogPiece2Send = 1;
