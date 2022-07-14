@@ -158,10 +158,10 @@ void AK10_9_ImpedanceControl(AK10_9HandleCubaMarsFW* hmotor, float spring_consta
 
 void AK10_9_Set_DataLog_Label_Acceleration_Observer(void)
 {
-  USB_SendDataSlotLabel("11", "P desired (rad)", "P mes (rad)", "V mes (rad/s)", \
+  USB_SendDataSlotLabel("12", "P desired (rad)", "P mes (rad)", "V mes (rad/s)", \
                         "Acc desired (deg/s)", "Acc raw (deg/s)", \
                         "Acc desired by real pos (deg/s)", "Acc filtered (deg/s)", \
-                        "Acc estimation error", "AccXIMU (m/s2)", "AccYIMU (m/s2)", "AccZIMU (m/s2)");
+                        "Acc estimation error", "AccXIMU (m/s2)", "AccYIMU (m/s2)", "AccZIMU (m/s2)", "Iq");
 }
 
 
@@ -179,6 +179,7 @@ void AK10_9_DataLog_Update_Data_Slots(AK10_9HandleCubaMarsFW* hmotor, BNO055Hand
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.AccX.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.AccY.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.AccZ.f;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realCurrent.f;
   hUSB.ifNewDataLogPiece2Send = 1;
 }
 
