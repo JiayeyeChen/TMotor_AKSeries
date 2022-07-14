@@ -1,6 +1,6 @@
 #include "ak10-9_v2_testing.h"
 
-AK10_9HandleCubaMarsFW hAKMotorLeftHip, hAKMotorLeftKnee, hAKMotorRightHip, hAKMotorRightKnee;
+AK10_9HandleCubaMarsFW hAKMotorRightHip, hAKMotorRightKnee;
 AK10_9HandleCubaMarsFW* hMotorPtrManualControl;
 AK10_9HandleDMFW hAKMotorDMFW1, hAKMotorDMFW2, hAKMotorDMFW3;
 

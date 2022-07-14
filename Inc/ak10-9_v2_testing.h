@@ -27,7 +27,7 @@ void AK10_9_DataLog_Update_Data_Slots(AK10_9HandleCubaMarsFW* hmotor, BNO055Hand
 void AK10_9_DataLog_Manager(AK10_9HandleCubaMarsFW* hmotor, BNO055Handle* himu);
 void AK10_9_Set_DataLog_Label_Acceleration_Observer(void);
 
-extern AK10_9HandleCubaMarsFW hAKMotorLeftHip, hAKMotorLeftKnee, hAKMotorRightHip, hAKMotorRightKnee;
+extern AK10_9HandleCubaMarsFW hAKMotorRightHip, hAKMotorRightKnee;
 extern AK10_9HandleDMFW hAKMotorDMFW1, hAKMotorDMFW2, hAKMotorDMFW3;
 extern AK10_9HandleCubaMarsFW* hMotorPtrManualControl;
 extern uint8_t ifMotorProfilingStarted;
