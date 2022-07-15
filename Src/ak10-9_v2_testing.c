@@ -30,7 +30,8 @@ void EXOSKELETON_MotorInit(void)
   hAKMotorRightHip.lastReceivedTime = 0;
   hAKMotorRightHip.status = AK10_9_Offline;
   hAKMotorRightHip.kt = 1.23078f;
-  hAKMotorRightHip.posOffset = -210.0f;
+  hAKMotorRightHip.posOffsetDeg = -210.0f;
+  hAKMotorRightHip.posOffsetRad = hAKMotorRightHip.posOffsetDeg * deg2rad;
   hAKMotorRightHip.posDirectionCorrection = 1.0f;
   hAKMotorRightHip.kp.f = 0.0f;
   hAKMotorRightHip.kd.f = 0.0f;
@@ -50,7 +51,8 @@ void EXOSKELETON_MotorInit(void)
   hAKMotorRightKnee.status = AK10_9_Offline;
   hAKMotorRightKnee.kt = 1.04154f;
   hAKMotorRightKnee.accAvgPtr = 0;
-  hAKMotorRightKnee.posOffset = 0.0f;
+  hAKMotorRightKnee.posOffsetDeg = 0.0f;
+  hAKMotorRightKnee.posOffsetRad = hAKMotorRightKnee.posOffsetDeg * deg2rad;
   hAKMotorRightKnee.posDirectionCorrection = -1.0f;
   hAKMotorRightKnee.realAccelerationFiltered.f = 0.0f;
   hAKMotorRightKnee.realAccelerationFilteredPrevious = 0.0f;
