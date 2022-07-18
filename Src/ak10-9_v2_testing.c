@@ -44,6 +44,7 @@ void EXOSKELETON_MotorInit(void)
   hAKMotorRightHip.realAccelerationFiltered.f = 0.0f;
   hAKMotorRightHip.realAccelerationRaw.f = 0.0f;
   hAKMotorRightHip.ifCustomizedPositionSpeedControlFinished = 1;
+  hAKMotorRightHip.enablingStatus = AK10_9_MITMODE_DISABLED;
   
   hAKMotorRightKnee.hcan = &hcan2;
   hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE_TX;
@@ -73,6 +74,7 @@ void EXOSKELETON_MotorInit(void)
 //  hAKMotorRightKnee.b1Butter = 0.0000877;
 //  hAKMotorRightKnee.b2Butter = 0.0001753;
 //  hAKMotorRightKnee.b3Butter = 0.0000877;
+  hAKMotorRightKnee.enablingStatus = AK10_9_MITMODE_DISABLED;
 }
 
 void MotorInit_DMFW(void)
