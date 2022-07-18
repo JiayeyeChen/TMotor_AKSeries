@@ -33,8 +33,16 @@ void EXOSKELETON_MotorInit(void)
   hAKMotorRightHip.posOffsetDeg = -210.0f;
   hAKMotorRightHip.posOffsetRad = hAKMotorRightHip.posOffsetDeg * deg2rad;
   hAKMotorRightHip.posDirectionCorrection = 1.0f;
-  hAKMotorRightHip.kp.f = 0.0f;
-  hAKMotorRightHip.kd.f = 0.0f;
+  hAKMotorRightHip.setPos.f = 0.0f;
+  hAKMotorRightHip.setVel.f = 0.0f;
+  hAKMotorRightHip.setIq.f = 0.0f;
+  hAKMotorRightHip.setKp.f = 0.0f;
+  hAKMotorRightHip.setKd.f = 0.0f;
+  hAKMotorRightHip.goalPos.f = 0.0f;
+  hAKMotorRightHip.goalVel.f = 0.0f;
+  hAKMotorRightHip.goalIq.f = 0.0f;
+  hAKMotorRightHip.goalKp.f = 0.0f;
+  hAKMotorRightHip.goalKd.f = 0.0f;
   hAKMotorRightHip.controlMode = AK10_9_DM_FW_MODE_MIT;
   hAKMotorRightHip.a2Butter = -1.9645;
   hAKMotorRightHip.a3Butter = 0.9651;
@@ -55,6 +63,16 @@ void EXOSKELETON_MotorInit(void)
   hAKMotorRightKnee.posOffsetDeg = 0.0f;
   hAKMotorRightKnee.posOffsetRad = hAKMotorRightKnee.posOffsetDeg * deg2rad;
   hAKMotorRightKnee.posDirectionCorrection = -1.0f;
+  hAKMotorRightKnee.setPos.f = 0.0f;
+  hAKMotorRightKnee.setVel.f = 0.0f;
+  hAKMotorRightKnee.setIq.f = 0.0f;
+  hAKMotorRightKnee.setKp.f = 0.0f;
+  hAKMotorRightKnee.setKd.f = 0.0f;
+  hAKMotorRightKnee.goalPos.f = 0.0f;
+  hAKMotorRightKnee.goalVel.f = 0.0f;
+  hAKMotorRightKnee.goalIq.f = 0.0f;
+  hAKMotorRightKnee.goalKp.f = 0.0f;
+  hAKMotorRightKnee.goalKd.f = 0.0f;
   hAKMotorRightKnee.realAccelerationFiltered.f = 0.0f;
   hAKMotorRightKnee.realAccelerationFilteredPrevious = 0.0f;
   hAKMotorRightKnee.realAccelerationRaw.f = 0.0f;
@@ -84,8 +102,16 @@ void MotorInit_DMFW(void)
   hAKMotorDMFW1.lastReceivedTime = 0;
   hAKMotorDMFW1.status = AK10_9_Offline;
   hAKMotorDMFW1.kt = 1.2138f;
-  hAKMotorDMFW1.kp.f = 0.0f;
-  hAKMotorDMFW1.kd.f = 0.0f;
+  hAKMotorDMFW1.setPos.f = 0.0f;
+  hAKMotorDMFW1.setVel.f = 0.0f;
+  hAKMotorDMFW1.setIq.f = 0.0f;
+  hAKMotorDMFW1.setKp.f = 0.0f;
+  hAKMotorDMFW1.setKd.f = 0.0f;
+  hAKMotorDMFW1.goalPos.f = 0.0f;
+  hAKMotorDMFW1.goalVel.f = 0.0f;
+  hAKMotorDMFW1.goalIq.f = 0.0f;
+  hAKMotorDMFW1.goalKp.f = 0.0f;
+  hAKMotorDMFW1.goalKd.f = 0.0f;
   hAKMotorDMFW1.controlMode = AK10_9_DM_FW_MODE_MIT;
   
   hAKMotorDMFW2.canID = 0x02;
@@ -93,8 +119,16 @@ void MotorInit_DMFW(void)
   hAKMotorDMFW2.lastReceivedTime = 0;
   hAKMotorDMFW2.status = AK10_9_Offline;
   hAKMotorDMFW2.kt = 1.2138f;
-  hAKMotorDMFW2.kp.f = 0.0f;
-  hAKMotorDMFW2.kd.f = 0.0f;
+  hAKMotorDMFW2.setPos.f = 0.0f;
+  hAKMotorDMFW2.setVel.f = 0.0f;
+  hAKMotorDMFW2.setIq.f = 0.0f;
+  hAKMotorDMFW2.setKp.f = 0.0f;
+  hAKMotorDMFW2.setKd.f = 0.0f;
+  hAKMotorDMFW2.goalPos.f = 0.0f;
+  hAKMotorDMFW2.goalVel.f = 0.0f;
+  hAKMotorDMFW2.goalIq.f = 0.0f;
+  hAKMotorDMFW2.goalKp.f = 0.0f;
+  hAKMotorDMFW2.goalKd.f = 0.0f;
   hAKMotorDMFW2.controlMode = AK10_9_DM_FW_MODE_MIT;
   
   hAKMotorDMFW3.canID = 0x03;
@@ -102,8 +136,16 @@ void MotorInit_DMFW(void)
   hAKMotorDMFW3.lastReceivedTime = 0;
   hAKMotorDMFW3.status = AK10_9_Offline;
   hAKMotorDMFW3.kt = 1.2138f;
-  hAKMotorDMFW3.kp.f = 0.0f;
-  hAKMotorDMFW3.kd.f = 0.0f;
+  hAKMotorDMFW3.setPos.f = 0.0f;
+  hAKMotorDMFW3.setVel.f = 0.0f;
+  hAKMotorDMFW3.setIq.f = 0.0f;
+  hAKMotorDMFW3.setKp.f = 0.0f;
+  hAKMotorDMFW3.setKd.f = 0.0f;
+  hAKMotorDMFW3.goalPos.f = 0.0f;
+  hAKMotorDMFW3.goalVel.f = 0.0f;
+  hAKMotorDMFW3.goalIq.f = 0.0f;
+  hAKMotorDMFW3.goalKp.f = 0.0f;
+  hAKMotorDMFW3.goalKd.f = 0.0f;
   hAKMotorDMFW3.controlMode = AK10_9_DM_FW_MODE_MIT;
 }
 
@@ -156,7 +198,7 @@ void AK10_9_Set_DataLog_Label_Acceleration_Observer(void)
 void AK10_9_DataLog_Update_Data_Slots_CubeMARS_FW(AK10_9HandleCubaMarsFW* hmotor, BNO055Handle* himu)
 {
   uint8_t ptr = 0;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setPosition.f;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setPos.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realPosition.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realVelocityPresent.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setAcceleration.f;
@@ -174,7 +216,7 @@ void AK10_9_DataLog_Update_Data_Slots_CubeMARS_FW(AK10_9HandleCubaMarsFW* hmotor
 void AK10_9_DataLog_Update_Data_Slots_DM_FW(AK10_9HandleDMFW* hmotor, BNO055Handle* himu)
 {
   uint8_t ptr = 0;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setPosition.f;
+  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setPos.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realPositionDeg.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realVelocityPresent.f;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setAcceleration.f;
