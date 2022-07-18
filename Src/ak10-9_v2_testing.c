@@ -53,6 +53,7 @@ void EXOSKELETON_MotorInit(void)
   hAKMotorRightHip.realAccelerationRaw.f = 0.0f;
   hAKMotorRightHip.ifCustomizedPositionSpeedControlFinished = 1;
   hAKMotorRightHip.enablingStatus = AK10_9_MITMODE_DISABLED;
+  hAKMotorRightHip.ifMITModeParameterSmootherWorkFinished = 0;
   
   hAKMotorRightKnee.hcan = &hcan2;
   hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE_TX;
@@ -80,6 +81,7 @@ void EXOSKELETON_MotorInit(void)
   hAKMotorRightKnee.timeDuration = 1.0f / 500.0f;
   hAKMotorRightKnee.alpha = hAKMotorRightKnee.cutOffFrequency * hAKMotorRightKnee.timeDuration / (1.0f + hAKMotorRightKnee.cutOffFrequency * hAKMotorRightKnee.timeDuration);
   hAKMotorRightKnee.ifCustomizedPositionSpeedControlFinished = 1;
+  hAKMotorRightKnee.ifMITModeParameterSmootherWorkFinished = 0;
   //cut-off frequency = 4 hz sampling rate 1000hz(no problem)
   hAKMotorRightKnee.a2Butter = -1.9645;
   hAKMotorRightKnee.a3Butter = 0.9651;
