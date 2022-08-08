@@ -1,8 +1,9 @@
 #include "ak10-9_v2_testing.h"
 
-AK10_9HandleCubaMarsFW hAKMotorRightHip_old, hAKMotorRightKnee;
+AK10_9HandleCubaMarsFW hAKMotorRightHip_old, hAKMotorRightKnee, hAKMotorSpare1;
 AK10_9HandleDMFW       hAKMotorRightHip;
 AK10_9HandleCubaMarsFW* hMotorPtrManualControl;
+AK10_9HandleDMFW* hMotorPtrManualControlDMFW;
 AK10_9HandleDMFW hAKMotorDMFW1, hAKMotorDMFW2, hAKMotorDMFW3;
 
 float motor_profiling_trajectory = 0.0f;
@@ -149,6 +150,46 @@ void MotorInit_DMFW(void)
   hAKMotorDMFW3.goalKp.f = 0.0f;
   hAKMotorDMFW3.goalKd.f = 0.0f;
   hAKMotorDMFW3.controlMode = AK10_9_DM_FW_MODE_MIT;
+  
+  hMotorPtrManualControlDMFW = &hAKMotorDMFW1;
+}
+
+void MotorInit_CubeMarsFW(void)
+{
+  hAKMotorSpare1.hcan = &hcan2;
+  hAKMotorSpare1.canID = CAN_ID_TMOTOR_SPARE1_SERVOMODE;
+  hAKMotorSpare1.lastReceivedTime = 0;
+  hAKMotorSpare1.status = AK10_9_Offline;
+  hAKMotorSpare1.kt = 1.04154f;
+  hAKMotorSpare1.accAvgPtr = 0;
+  hAKMotorSpare1.posOffsetDeg = 0.0f;
+  hAKMotorSpare1.posOffsetRad = hAKMotorSpare1.posOffsetDeg * deg2rad;
+  hAKMotorSpare1.posDirectionCorrection = -1.0f;
+  hAKMotorSpare1.setPos.f = 0.0f;
+  hAKMotorSpare1.setVel.f = 0.0f;
+  hAKMotorSpare1.setIq.f = 0.0f;
+  hAKMotorSpare1.setKp.f = 0.0f;
+  hAKMotorSpare1.setKd.f = 0.0f;
+  hAKMotorSpare1.goalPos.f = 0.0f;
+  hAKMotorSpare1.goalVel.f = 0.0f;
+  hAKMotorSpare1.goalIq.f = 0.0f;
+  hAKMotorSpare1.goalKp.f = 0.0f;
+  hAKMotorSpare1.goalKd.f = 0.0f;
+  hAKMotorSpare1.realAccelerationFiltered.f = 0.0f;
+  hAKMotorSpare1.realAccelerationFilteredPrevious = 0.0f;
+  hAKMotorSpare1.realAccelerationRaw.f = 0.0f;
+  hAKMotorSpare1.cutOffFrequency = 14.043;
+  hAKMotorSpare1.timeDuration = 1.0f / 500.0f;
+  hAKMotorSpare1.alpha = hAKMotorSpare1.cutOffFrequency * hAKMotorSpare1.timeDuration / (1.0f + hAKMotorSpare1.cutOffFrequency * hAKMotorSpare1.timeDuration);
+  hAKMotorSpare1.ifCustomizedPositionSpeedControlFinished = 1;
+  hAKMotorSpare1.ifMITModeParameterSmootherWorkFinished = 0;
+  //cut-off frequency = 4 hz sampling rate 1000hz(no problem)
+  hAKMotorSpare1.a2Butter = -1.9645;
+  hAKMotorSpare1.a3Butter = 0.9651;
+  hAKMotorSpare1.b1Butter = 0.0001551;
+  hAKMotorSpare1.b2Butter = 0.0003103;
+  hAKMotorSpare1.b3Butter = 0.0001551;
+  hAKMotorSpare1.enablingStatus = AK10_9_MITMODE_DISABLED;
 }
 
 void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9HandleCubaMarsFW* hmotor, float frequency)
