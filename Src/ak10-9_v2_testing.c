@@ -4,7 +4,7 @@ AK10_9HandleCubaMarsFW hAKMotorRightHip_old, hAKMotorRightKnee, hAKMotorSpare1;
 AK10_9HandleDMFW       hAKMotorRightHip;
 AK10_9HandleCubaMarsFW* hMotorPtrManualControl;
 AK10_9HandleDMFW* hMotorPtrManualControlDMFW;
-AK10_9HandleDMFW hAKMotorDMFW1, hAKMotorDMFW2, hAKMotorDMFW3;
+
 
 float motor_profiling_trajectory = 0.0f;
 float manualControlValue_pos = 0.0f;
@@ -96,62 +96,6 @@ void EXOSKELETON_MotorInit(void)
 //  hAKMotorRightKnee.b2Butter = 0.0001753;
 //  hAKMotorRightKnee.b3Butter = 0.0000877;
   hAKMotorRightKnee.enablingStatus = AK10_9_MITMODE_DISABLED;
-}
-
-void MotorInit_DMFW(void)
-{
-  hAKMotorDMFW1.canID = 0x01;
-  hAKMotorDMFW1.hcan = &hcan2;
-  hAKMotorDMFW1.lastReceivedTime = 0;
-  hAKMotorDMFW1.status = AK10_9_Offline;
-  hAKMotorDMFW1.kt = 1.2138f;
-  hAKMotorDMFW1.setPos.f = 0.0f;
-  hAKMotorDMFW1.setVel.f = 0.0f;
-  hAKMotorDMFW1.setIq.f = 0.0f;
-  hAKMotorDMFW1.setKp.f = 0.0f;
-  hAKMotorDMFW1.setKd.f = 0.0f;
-  hAKMotorDMFW1.goalPos.f = 0.0f;
-  hAKMotorDMFW1.goalVel.f = 0.0f;
-  hAKMotorDMFW1.goalIq.f = 0.0f;
-  hAKMotorDMFW1.goalKp.f = 0.0f;
-  hAKMotorDMFW1.goalKd.f = 0.0f;
-  hAKMotorDMFW1.controlMode = AK10_9_DM_FW_MODE_MIT;
-  
-  hAKMotorDMFW2.canID = 0x02;
-  hAKMotorDMFW2.hcan = &hcan2;
-  hAKMotorDMFW2.lastReceivedTime = 0;
-  hAKMotorDMFW2.status = AK10_9_Offline;
-  hAKMotorDMFW2.kt = 1.2138f;
-  hAKMotorDMFW2.setPos.f = 0.0f;
-  hAKMotorDMFW2.setVel.f = 0.0f;
-  hAKMotorDMFW2.setIq.f = 0.0f;
-  hAKMotorDMFW2.setKp.f = 0.0f;
-  hAKMotorDMFW2.setKd.f = 0.0f;
-  hAKMotorDMFW2.goalPos.f = 0.0f;
-  hAKMotorDMFW2.goalVel.f = 0.0f;
-  hAKMotorDMFW2.goalIq.f = 0.0f;
-  hAKMotorDMFW2.goalKp.f = 0.0f;
-  hAKMotorDMFW2.goalKd.f = 0.0f;
-  hAKMotorDMFW2.controlMode = AK10_9_DM_FW_MODE_MIT;
-  
-  hAKMotorDMFW3.canID = 0x03;
-  hAKMotorDMFW3.hcan = &hcan2;
-  hAKMotorDMFW3.lastReceivedTime = 0;
-  hAKMotorDMFW3.status = AK10_9_Offline;
-  hAKMotorDMFW3.kt = 1.2138f;
-  hAKMotorDMFW3.setPos.f = 0.0f;
-  hAKMotorDMFW3.setVel.f = 0.0f;
-  hAKMotorDMFW3.setIq.f = 0.0f;
-  hAKMotorDMFW3.setKp.f = 0.0f;
-  hAKMotorDMFW3.setKd.f = 0.0f;
-  hAKMotorDMFW3.goalPos.f = 0.0f;
-  hAKMotorDMFW3.goalVel.f = 0.0f;
-  hAKMotorDMFW3.goalIq.f = 0.0f;
-  hAKMotorDMFW3.goalKp.f = 0.0f;
-  hAKMotorDMFW3.goalKd.f = 0.0f;
-  hAKMotorDMFW3.controlMode = AK10_9_DM_FW_MODE_MIT;
-  
-  hMotorPtrManualControlDMFW = &hAKMotorDMFW1;
 }
 
 void MotorInit_CubeMarsFW(void)
