@@ -23,51 +23,15 @@ float tmotorProfilingSinWaveFrequency = 0.0f;
 
 void EXOSKELETON_MotorInit(void)
 {
-	hAKMotorRightHip.hcan = &hcan2;
-  hAKMotorRightHip.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_HIP_TX;
-  hAKMotorRightHip.lastReceivedTime = 0;
-  hAKMotorRightHip.status = AK10_9_Offline;
-  hAKMotorRightHip.kt = 1.1457f;
-  hAKMotorRightHip.accAvgPtr = 0;
-  hAKMotorRightHip.posOffsetDeg = -210.0f;
-  hAKMotorRightHip.posOffsetRad = hAKMotorRightHip.posOffsetDeg * deg2rad;
-  hAKMotorRightHip.posDirectionCorrection = 1.0f;
-  hAKMotorRightHip.setPos.f = 0.0f;
-  hAKMotorRightHip.setVel.f = 0.0f;
-  hAKMotorRightHip.setIq.f = 0.0f;
-  hAKMotorRightHip.setKp.f = 0.0f;
-  hAKMotorRightHip.setKd.f = 0.0f;
-  hAKMotorRightHip.goalPos.f = 0.0f;
-  hAKMotorRightHip.goalVel.f = 0.0f;
-  hAKMotorRightHip.goalIq.f = 0.0f;
-  hAKMotorRightHip.goalKp.f = 0.0f;
-  hAKMotorRightHip.goalKd.f = 0.0f;
-  hAKMotorRightHip.realAccelerationFiltered.f = 0.0f;
-  hAKMotorRightHip.realAccelerationFilteredPrevious = 0.0f;
-  hAKMotorRightHip.realAccelerationRaw.f = 0.0f;
-  hAKMotorRightHip.cutOffFrequency = 14.043;
-  hAKMotorRightHip.timeDuration = 1.0f / 500.0f;
-  hAKMotorRightHip.alpha = hAKMotorRightHip.cutOffFrequency * hAKMotorRightHip.timeDuration / (1.0f + hAKMotorRightHip.cutOffFrequency * hAKMotorRightHip.timeDuration);
-  hAKMotorRightHip.ifCustomizedPositionSpeedControlFinished = 1;
-  hAKMotorRightHip.ifMITModeParameterSmootherWorkFinished = 0;
-  //cut-off frequency = 4 hz sampling rate 1000hz(no problem)
-  hAKMotorRightHip.a2Butter = -1.9645;
-  hAKMotorRightHip.a3Butter = 0.9651;
-  hAKMotorRightHip.b1Butter = 0.0001551;
-  hAKMotorRightHip.b2Butter = 0.0003103;
-  hAKMotorRightHip.b3Butter = 0.0001551;
-  hAKMotorRightHip.enablingStatus = AK10_9_MITMODE_DISABLED;
-	
-	
-  hAKMotorRightKnee.hcan = &hcan2;
-  hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE_TX;
+	hAKMotorRightKnee.hcan = &hcan2;
+  hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_HIP_TX;
   hAKMotorRightKnee.lastReceivedTime = 0;
   hAKMotorRightKnee.status = AK10_9_Offline;
-  hAKMotorRightKnee.kt = 1.2339f;
+  hAKMotorRightKnee.kt = 1.1457f;
   hAKMotorRightKnee.accAvgPtr = 0;
-  hAKMotorRightKnee.posOffsetDeg = 0.0f;
+  hAKMotorRightKnee.posOffsetDeg = -210.0f;
   hAKMotorRightKnee.posOffsetRad = hAKMotorRightKnee.posOffsetDeg * deg2rad;
-  hAKMotorRightKnee.posDirectionCorrection = -1.0f;
+  hAKMotorRightKnee.posDirectionCorrection = 1.0f;
   hAKMotorRightKnee.setPos.f = 0.0f;
   hAKMotorRightKnee.setVel.f = 0.0f;
   hAKMotorRightKnee.setIq.f = 0.0f;
@@ -93,6 +57,42 @@ void EXOSKELETON_MotorInit(void)
   hAKMotorRightKnee.b2Butter = 0.0003103;
   hAKMotorRightKnee.b3Butter = 0.0001551;
   hAKMotorRightKnee.enablingStatus = AK10_9_MITMODE_DISABLED;
+	
+	
+  hAKMotorRightHip.hcan = &hcan2;
+  hAKMotorRightHip.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE_TX;
+  hAKMotorRightHip.lastReceivedTime = 0;
+  hAKMotorRightHip.status = AK10_9_Offline;
+  hAKMotorRightHip.kt = 1.2339f;
+  hAKMotorRightHip.accAvgPtr = 0;
+  hAKMotorRightHip.posOffsetDeg = 0.0f;
+  hAKMotorRightHip.posOffsetRad = hAKMotorRightHip.posOffsetDeg * deg2rad;
+  hAKMotorRightHip.posDirectionCorrection = -1.0f;
+  hAKMotorRightHip.setPos.f = 0.0f;
+  hAKMotorRightHip.setVel.f = 0.0f;
+  hAKMotorRightHip.setIq.f = 0.0f;
+  hAKMotorRightHip.setKp.f = 0.0f;
+  hAKMotorRightHip.setKd.f = 0.0f;
+  hAKMotorRightHip.goalPos.f = 0.0f;
+  hAKMotorRightHip.goalVel.f = 0.0f;
+  hAKMotorRightHip.goalIq.f = 0.0f;
+  hAKMotorRightHip.goalKp.f = 0.0f;
+  hAKMotorRightHip.goalKd.f = 0.0f;
+  hAKMotorRightHip.realAccelerationFiltered.f = 0.0f;
+  hAKMotorRightHip.realAccelerationFilteredPrevious = 0.0f;
+  hAKMotorRightHip.realAccelerationRaw.f = 0.0f;
+  hAKMotorRightHip.cutOffFrequency = 14.043;
+  hAKMotorRightHip.timeDuration = 1.0f / 500.0f;
+  hAKMotorRightHip.alpha = hAKMotorRightHip.cutOffFrequency * hAKMotorRightHip.timeDuration / (1.0f + hAKMotorRightHip.cutOffFrequency * hAKMotorRightHip.timeDuration);
+  hAKMotorRightHip.ifCustomizedPositionSpeedControlFinished = 1;
+  hAKMotorRightHip.ifMITModeParameterSmootherWorkFinished = 0;
+  //cut-off frequency = 4 hz sampling rate 1000hz(no problem)
+  hAKMotorRightHip.a2Butter = -1.9645;
+  hAKMotorRightHip.a3Butter = 0.9651;
+  hAKMotorRightHip.b1Butter = 0.0001551;
+  hAKMotorRightHip.b2Butter = 0.0003103;
+  hAKMotorRightHip.b3Butter = 0.0001551;
+  hAKMotorRightHip.enablingStatus = AK10_9_MITMODE_DISABLED;
 }
 
 
