@@ -24,12 +24,12 @@ float tmotorProfilingSinWaveFrequency = 0.0f;
 void EXOSKELETON_MotorInit(void)
 {
 	hAKMotorRightKnee.hcan = &hcan2;
-  hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_HIP_TX;
+  hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE_TX;
   hAKMotorRightKnee.lastReceivedTime = 0;
   hAKMotorRightKnee.status = AK10_9_Offline;
   hAKMotorRightKnee.kt = 1.1457f;
   hAKMotorRightKnee.accAvgPtr = 0;
-  hAKMotorRightKnee.posOffsetDeg = -210.0f;
+  hAKMotorRightKnee.posOffsetDeg = 0.0f;
   hAKMotorRightKnee.posOffsetRad = hAKMotorRightKnee.posOffsetDeg * deg2rad;
   hAKMotorRightKnee.posDirectionCorrection = 1.0f;
   hAKMotorRightKnee.setPos.f = 0.0f;
@@ -60,14 +60,14 @@ void EXOSKELETON_MotorInit(void)
 	
 	
   hAKMotorRightHip.hcan = &hcan2;
-  hAKMotorRightHip.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE_TX;
+  hAKMotorRightHip.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_HIP_TX;
   hAKMotorRightHip.lastReceivedTime = 0;
   hAKMotorRightHip.status = AK10_9_Offline;
   hAKMotorRightHip.kt = 1.2339f;
   hAKMotorRightHip.accAvgPtr = 0;
-  hAKMotorRightHip.posOffsetDeg = 0.0f;
+  hAKMotorRightHip.posOffsetDeg = -180.0f;
   hAKMotorRightHip.posOffsetRad = hAKMotorRightHip.posOffsetDeg * deg2rad;
-  hAKMotorRightHip.posDirectionCorrection = -1.0f;
+  hAKMotorRightHip.posDirectionCorrection = 1.0f;
   hAKMotorRightHip.setPos.f = 0.0f;
   hAKMotorRightHip.setVel.f = 0.0f;
   hAKMotorRightHip.setIq.f = 0.0f;
