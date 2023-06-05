@@ -81,7 +81,7 @@ void EXOSKELETON_MotorInit(void)
   hAKMotorRightHip.realAccelerationFiltered.f = 0.0f;
   hAKMotorRightHip.realAccelerationFilteredPrevious = 0.0f;
   hAKMotorRightHip.realAccelerationRaw.f = 0.0f;
-  hAKMotorRightHip.cutOffFrequency = 14.043;
+  hAKMotorRightHip.cutOffFrequency = 14.043f;
   hAKMotorRightHip.timeDuration = 1.0f / 500.0f;
   hAKMotorRightHip.alpha = hAKMotorRightHip.cutOffFrequency * hAKMotorRightHip.timeDuration / (1.0f + hAKMotorRightHip.cutOffFrequency * hAKMotorRightHip.timeDuration);
   hAKMotorRightHip.ifCustomizedPositionSpeedControlFinished = 1;
