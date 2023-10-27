@@ -1,7 +1,7 @@
 #include "ak10-9_v2_testing.h"
 
-AK10_9HandleCubaMarsFW hAKMotorRightHip, hAKMotorRightKnee;
-AK10_9HandleCubaMarsFW* hMotorPtrManualControl;
+AK10_9Handle hAKMotorRightHip, hAKMotorRightKnee;
+AK10_9Handle* hMotorPtrManualControl;
 
 float motor_profiling_trajectory = 0.0f;
 float manualControlValue_pos = 0.0f;
@@ -24,7 +24,7 @@ float tmotorProfilingSinWaveFrequency = 0.0f;
 void EXOSKELETON_MotorInit(void)
 {
 	hAKMotorRightKnee.hcan = &hcan2;
-  hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE_TX;
+  hAKMotorRightKnee.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_KNEE_MOTOR;
   hAKMotorRightKnee.lastReceivedTime = 0;
   hAKMotorRightKnee.status = AK10_9_Offline;
   hAKMotorRightKnee.kt = 1.1457f;
@@ -60,7 +60,7 @@ void EXOSKELETON_MotorInit(void)
 	
 	
   hAKMotorRightHip.hcan = &hcan2;
-  hAKMotorRightHip.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_HIP_TX;
+  hAKMotorRightHip.canID = CAN_ID_TMOTOR_EXOSKELETON_RIGHT_HIP_MOTOR;
   hAKMotorRightHip.lastReceivedTime = 0;
   hAKMotorRightHip.status = AK10_9_Offline;
   hAKMotorRightHip.kt = 1.2339f;
@@ -96,7 +96,7 @@ void EXOSKELETON_MotorInit(void)
 }
 
 
-void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9HandleCubaMarsFW* hmotor, float frequency)
+void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9Handle* hmotor, float frequency)
 {
   float t = (float)(HAL_GetTick() - timeDifference) / 1000.0f;
   motor_profiling_trajectory = 180.0f * (float)sin(frequency * 2.0f * pi * t);
@@ -109,12 +109,12 @@ void AK10_9_MotorProfiling_Function1_Half_Sin(AK10_9HandleCubaMarsFW* hmotor, fl
   hmotor->setAcceleration_ByRealPosition.f = -pow(2.0f * pi * frequency, 2.0f) * hmotor->realPosition.f;
 }
 
-void AK10_9_MotorProfiling_Function2_CurrentControlStepResponse(AK10_9HandleCubaMarsFW* hmotor)
+void AK10_9_MotorProfiling_Function2_CurrentControlStepResponse(AK10_9Handle* hmotor)
 {
   AK10_9_ServoMode_CurrentControl(hmotor, -1.0f);
 }
 
-void AK10_9_Calculate_velocity_current_AVG(AK10_9HandleCubaMarsFW* hmotor)
+void AK10_9_Calculate_velocity_current_AVG(AK10_9Handle* hmotor)
 {
   velocityAVG[velocityAVGPtr++] = hmotor->realVelocityPresent.f;
   if (velocityAVGPtr == 1023)
@@ -142,7 +142,7 @@ void AK10_9_Set_DataLog_Label_Acceleration_Observer(void)
 }
 
 
-void AK10_9_DataLog_Update_Data_Slots_CubeMARS_FW(AK10_9HandleCubaMarsFW* hmotor, BNO055Handle* himu)
+void AK10_9_DataLog_Update_Data_Slots_CubeMARS_FW(AK10_9Handle* hmotor, BNO055Handle* himu)
 {
   uint8_t ptr = 0;
   dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setPos.f;
@@ -160,35 +160,10 @@ void AK10_9_DataLog_Update_Data_Slots_CubeMARS_FW(AK10_9HandleCubaMarsFW* hmotor
   hUSB.ifNewDataLogPiece2Send = 1;
 }
 
-void AK10_9_DataLog_Update_Data_Slots_DM_FW(AK10_9HandleDMFW* hmotor, BNO055Handle* himu)
-{
-  uint8_t ptr = 0;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setPos.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realPositionDeg.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realVelocityPresent.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setAcceleration.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realAccelerationRaw.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->setAcceleration_ByRealPosition.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realAccelerationFiltered.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realAccelerationFiltered.f - hmotor->setAcceleration_ByRealPosition.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.AccX.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.AccY.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = himu->parsedData.AccZ.f;
-  dataSlots_AK10_9_Acceleration_Observer_Testing[ptr++].f = hmotor->realCurrent.f;
-  hUSB.ifNewDataLogPiece2Send = 1;
-}
 
-void AK10_9_DataLog_Manager_CubeMARS_FW(AK10_9HandleCubaMarsFW* hmotor, BNO055Handle* himu)
+
+void AK10_9_DataLog_Manager_CubeMARS_FW(AK10_9Handle* hmotor, BNO055Handle* himu)
 {
   USB_DataLogManager(AK10_9_Set_DataLog_Label_Acceleration_Observer, dataSlots_AK10_9_Acceleration_Observer_Testing);
   AK10_9_DataLog_Update_Data_Slots_CubeMARS_FW(hmotor, himu);
 }
-
-void AK10_9_DataLog_Manager_DM_FW(AK10_9HandleDMFW* hmotor, BNO055Handle* himu)
-{
-  USB_DataLogManager(AK10_9_Set_DataLog_Label_Acceleration_Observer, dataSlots_AK10_9_Acceleration_Observer_Testing);
-  AK10_9_DataLog_Update_Data_Slots_DM_FW(hmotor, himu);
-}
-
-
-
